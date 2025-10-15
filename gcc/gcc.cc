@@ -5664,7 +5664,33 @@ set_collect_gcc_options (void)
     }
 
   obstack_grow (&collect_obstack, "\0", 1);
-  xputenv (XOBFINISH (&collect_obstack, char *));
+  const char *string = XOBFINISH (&collect_obstack, char *);
+  const char *prefix = "COLLECT_GCC_OPTIONS=";
+  size_t prefix_len = strlen (prefix);
+
+  if (strncmp (string, prefix, prefix_len) == 0)
+    {
+      const char *data_to_write = string + prefix_len;
+      char *temp_file = make_at_file ();
+
+      FILE *fptr = fopen (temp_file, "w");
+      if (fptr == NULL)
+	{
+	  fatal_error (input_location, "cannot open temporary file %s: %m", temp_file);
+	  return;
+	}
+      if (fwrite (data_to_write, sizeof(char), strlen(data_to_write), fptr))
+	{
+	  fatal_error (input_location, "cannot write to temporary file %s: %m", temp_file);
+	  fclose (fptr);
+	  return;
+	}
+      char *env_val = (char *) xmalloc (strlen (temp_file) + strlen(prefix) + 2);
+      sprintf (env_val, "COLLECT_GCC_OPTIONS=@%s", temp_file);
+      xputenv (env_val);
+      record_temp_file (temp_file, !save_temps_flag, !save_temps_flag);
+      fclose (fptr);
+    }
 }
 
 /* Process a spec string, accumulating and running commands.  */

@@ -1004,7 +1004,7 @@ main (int argc, char **argv)
     /* Now pick up any flags we want early from COLLECT_GCC_OPTIONS
        The LTO options are passed here as are other options that might
        be unsuitable for ld (e.g. -save-temps).  */
-    p = getenv ("COLLECT_GCC_OPTIONS");
+    p = getenv_extended ("COLLECT_GCC_OPTIONS");
     while (p && *p)
       {
 	const char *q = extract_string (&p);
@@ -1201,7 +1201,7 @@ main (int argc, char **argv)
      AIX support needs to know if -shared has been specified before
      parsing commandline arguments.  */
 
-  p = getenv ("COLLECT_GCC_OPTIONS");
+  p = getenv_extended ("COLLECT_GCC_OPTIONS");
   while (p && *p)
     {
       const char *q = extract_string (&p);
@@ -1596,7 +1596,7 @@ main (int argc, char **argv)
       fprintf (stderr, "o_file              = %s\n",
 	       (o_file ? o_file : "not found"));
 
-      ptr = getenv ("COLLECT_GCC_OPTIONS");
+      ptr = getenv_extended ("COLLECT_GCC_OPTIONS");
       if (ptr)
 	fprintf (stderr, "COLLECT_GCC_OPTIONS = %s\n", ptr);
 

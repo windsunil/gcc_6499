@@ -48,6 +48,9 @@ extern "C" {
 
 #include <stdio.h>
 
+/* Extended environment variable function */
+extern char *getenv_extended (const char *);
+
 /* If the OS supports it, ensure that the supplied stream is setup to
    avoid any multi-threaded locking.  Otherwise leave the FILE pointer
    unchanged.  If the stream is NULL do nothing.  */

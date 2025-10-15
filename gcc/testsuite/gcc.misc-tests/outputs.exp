@@ -343,99 +343,99 @@ outest "$b-5 exe default 1" $sing "$oaout" {} {{$aout}}
 outest "$b-6 exe default 2" $mult "$oaout" {} {{$aout}}
 
 # Driver-chosen aux outputs.
-outest "$b-7 asm savetmp 1" $sing "-S -save-temps" {} {{-0.i -0.s}}
-outest "$b-8 asm savetmp 2" $mult "-S -save-temps" {} {{-1.i -1.s -2.i -2.s}}
-outest "$b-9 obj savetmp unnamed1" $sing "-c -save-temps" {} {{-0.i -0.s -0.o}}
-outest "$b-10 obj savetmp unnamed2" $mult "-c -save-temps" {} {{-1.i -1.s -1.o -2.i -2.s -2.o}}
+outest "$b-7 asm savetmp 1" $sing "-S -save-temps" {} {{-0.i -0.s a.args.0 a.args.2 a.args.1}}
+outest "$b-8 asm savetmp 2" $mult "-S -save-temps" {} {{-1.i -1.s -2.i -2.s a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
+outest "$b-9 obj savetmp unnamed1" $sing "-c -save-temps" {} {{-0.i -0.s -0.o a.args.0 a.args.3 a.args.2 a.args.1}}
+outest "$b-10 obj savetmp unnamed2" $mult "-c -save-temps" {} {{-1.i -1.s -1.o -2.i -2.s -2.o a.args.6 a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
 
 # Aux outputs computed within the driver, based on output name (and
 # input).
-outest "$b-11 cpp savetmp named0" $sing "-E -o $b-0.i -save-temps" {} {{-0.i}}
-outest "$b-12 asm savetmp named0" $sing "-S -o $b-0.s -save-temps" {} {{-0.i -0.s}}
-outest "$b-13 obj savetmp named0" $sing "-c -o $b-0.o -save-temps" {} {{-0.i -0.s -0.o}}
-outest "$b-14 cpp savetmp namedb" $sing "-E -o $b.i -save-temps" {} {{.i}}
-outest "$b-15 asm savetmp namedb" $sing "-S -o $b.s -save-temps" {} {{.i .s}}
-outest "$b-16 obj savetmp namedb" $sing "-c -o $b.o -save-temps" {} {{.i .s .o}}
+outest "$b-11 cpp savetmp named0" $sing "-E -o $b-0.i -save-temps" {} {{-0.i outputs-0.args.1 a.args.0}}
+outest "$b-12 asm savetmp named0" $sing "-S -o $b-0.s -save-temps" {} {{-0.i -0.s outputs-0.args.2 a.args.0 a.args.1}}
+outest "$b-13 obj savetmp named0" $sing "-c -o $b-0.o -save-temps" {} {{-0.i -0.s -0.o outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-14 cpp savetmp namedb" $sing "-E -o $b.i -save-temps" {} {{.i outputs.args.1 a.args.0}}
+outest "$b-15 asm savetmp namedb" $sing "-S -o $b.s -save-temps" {} {{.i .s outputs.args.2 a.args.0 a.args.1}}
+outest "$b-16 obj savetmp namedb" $sing "-c -o $b.o -save-temps" {} {{.i .s .o outputs.args.3 a.args.0 a.args.2 a.args.1}}
 
 # When linking, the executable name gets prepended to aux output
 # basenames, except when executable and single input share the same
 # basename.
-outest "$b-17 exe savetmp unnamed1" $sing "-save-temps $oaout" {} {{a--0.i a--0.s a--0.o $aout}}
-outest "$b-18 exe savetmp unnamed2" $mult "-save-temps $oaout" {} {{a--1.i a--1.s a--1.o a--2.i a--2.s a--2.o $aout}}
-outest "$b-19 exe savetmp named0" $sing "-o $b-0.exe -save-temps" {} {{-0.i -0.s -0.o -0.exe}}
-outest "$b-20 exe savetmp namedb" $sing "-o $b.exe -save-temps" {} {{--0.i --0.s --0.o .exe}}
-outest "$b-21 exe savetmp named2" $mult "-o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe}}
+outest "$b-17 exe savetmp unnamed1" $sing "-save-temps $oaout" {} {{a--0.i a--0.s a--0.o $aout a-args.2 a-args.0 a-args.1 a.args.4 a.args.3}}
+outest "$b-18 exe savetmp unnamed2" $mult "-save-temps $oaout" {} {{a--1.i a--1.s a--1.o a--2.i a--2.s a--2.o $aout a-args.2 a-args.4 a-args.0 a-args.3 a-args.5 a-args.1 a.args.7 a.args.6}}
+outest "$b-19 exe savetmp named0" $sing "-o $b-0.exe -save-temps" {} {{-0.i -0.s -0.o -0.exe outputs-0.args.4 outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-20 exe savetmp namedb" $sing "-o $b.exe -save-temps" {} {{--0.i --0.s --0.o .exe outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2}}
+outest "$b-21 exe savetmp named2" $mult "-o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe outputs-args.1 outputs-args.4 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2}}
 
 # Additional files are created when an @file is used
 if !$skip_atsave {
-outest "$b-22 exe savetmp namedb-2" $sing "@$devnull -o $b.exe -save-temps" {} {{--0.i --0.s --0.o .args.0 !!$gld .ld1_args !0 .exe}}
-outest "$b-23 exe savetmp named2-2" $mult "@$devnull -o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .args.0 !!$gld .ld1_args !0 .exe}}
-outest "$b-24 exe savetmp named2-3" $mult "@$devnull -I dummy -o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o -args.0 -args.1 .args.2 !!$gld .ld1_args !0 .exe}}
-outest "$b-25 exe savetmp named2-4" $mult "@$devnull -I dummy -L dummy -o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o -args.0 -args.1 .args.2 .args.3 !!$gld .ld1_args !0 .exe}}
+outest "$b-22 exe savetmp namedb-2" $sing "@/dev/null -o $b.exe -save-temps" {} {{--0.i --0.s --0.o !!$gld .ld1_args !0 .exe outputs.args.5 outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2}}
+outest "$b-23 exe savetmp named2-2" $mult "@/dev/null -o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o !!$gld .ld1_args !0 .exe  outputs-args.1 outputs-args.4 outputs.args.8 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2}}
+outest "$b-24 exe savetmp named2-3" $mult "@/dev/null -I dummy -o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o -args.0 -args.1 !!$gld .ld1_args !0 .exe outputs-args.7 outputs-args.4 outputs.args.8 outputs-args.5 outputs-args.3 outputs.args.9 outputs.args.10 outputs-args.6 outputs-args.2}}
+outest "$b-25 exe savetmp named2-4" $mult "@/dev/null -I dummy -L dummy -o $b.exe -save-temps" {} {{--1.i --1.s --1.o --2.i --2.s --2.o -args.0 -args.1 !!$gld .ld1_args !0 .exe outputs-args.7 outputs-args.4 outputs.args.11 outputs.args.8 outputs-args.5 outputs-args.3 outputs.args.9 outputs.args.10 outputs-args.6 outputs-args.2}}
 }
 
 # Setting the main output to a dir selects it as the default aux&dump
 # location.
-outest "$b-26 cpp savetmp namedir0" $sing "-E -o o/$b-0.i -save-temps" {o/} {{-0.i} {}}
-outest "$b-27 asm savetmp namedir0" $sing "-S -o o/$b-0.s -save-temps" {o/} {{-0.i -0.s} {}}
-outest "$b-28 obj savetmp namedir0" $sing "-c -o o/$b-0.o -save-temps" {o/} {{-0.i -0.s -0.o} {}}
-outest "$b-29 cpp savetmp namedir" $sing "-E -o o/$b.i -save-temps" {o/} {{.i} {}}
-outest "$b-30 asm savetmp namedir" $sing "-S -o o/$b.s -save-temps" {o/} {{.i .s} {}}
-outest "$b-31 obj savetmp namedir" $sing "-c -o o/$b.o -save-temps" {o/} {{.i .s .o} {}}
-outest "$b-32 exe savetmp namedir0" $sing "-o o/$b-0.exe -save-temps" {o/} {{-0.i -0.s -0.o -0.exe} {}}
-outest "$b-33 exe savetmp namedirb" $sing "-o o/$b.exe -save-temps" {o/} {{--0.i --0.s --0.o .exe} {}}
-outest "$b-34 exe savetmp namedir2" $mult "-o o/$b.exe -save-temps" {o/} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe} {}}
+outest "$b-26 cpp savetmp namedir0" $sing "-E -o o/$b-0.i -save-temps" {o/} {{-0.i outputs-0.args.1} {}}
+outest "$b-27 asm savetmp namedir0" $sing "-S -o o/$b-0.s -save-temps" {o/} {{-0.i -0.s outputs-0.args.2} {}}
+outest "$b-28 obj savetmp namedir0" $sing "-c -o o/$b-0.o -save-temps" {o/} {{-0.i -0.s -0.o outputs-0.args.3} {}}
+outest "$b-29 cpp savetmp namedir" $sing "-E -o o/$b.i -save-temps" {o/} {{.i outputs.args.1} {}}
+outest "$b-30 asm savetmp namedir" $sing "-S -o o/$b.s -save-temps" {o/} {{.i .s outputs.args.2} {}}
+outest "$b-31 obj savetmp namedir" $sing "-c -o o/$b.o -save-temps" {o/} {{.i .s .o outputs.args.3} {}}
+outest "$b-32 exe savetmp namedir0" $sing "-o o/$b-0.exe -save-temps" {o/} {{-0.i -0.s -0.o -0.exe outputs-0.args.4 outputs-0.args.3} {}}
+outest "$b-33 exe savetmp namedirb" $sing "-o o/$b.exe -save-temps" {o/} {{--0.i --0.s --0.o .exe outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2} {}}
+outest "$b-34 exe savetmp namedir2" $mult "-o o/$b.exe -save-temps" {o/} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe outputs-args.1 outputs-args.4 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2} {}}
 
 # -save-temps=cwd overrides the aux output location to the current dir.
-outest "$b-35 obj savecwd unnamed1" $sing "-c -save-temps=cwd" {} {{-0.i -0.s -0.o}}
-outest "$b-36 obj savecwd unnamed2" $mult "-c -save-temps=cwd" {} {{-1.i -1.s -1.o -2.i -2.s -2.o}}
-outest "$b-37 cpp savecwd named0" $sing "-E -o $b-0.i -save-temps=cwd" {} {{-0.i}}
-outest "$b-38 asm savecwd named0" $sing "-S -o $b-0.s -save-temps=cwd" {} {{-0.i -0.s}}
-outest "$b-39 obj savecwd named0" $sing "-c -o $b-0.o -save-temps=cwd" {} {{-0.i -0.s -0.o}}
-outest "$b-40 cpp savecwd namedb" $sing "-E -o $b.i -save-temps=cwd" {} {{.i}}
-outest "$b-41 asm savecwd namedb" $sing "-S -o $b.s -save-temps=cwd" {} {{.i .s}}
-outest "$b-42 obj savecwd namedb" $sing "-c -o $b.o -save-temps=cwd" {} {{.i .s .o}}
-outest "$b-43 exe savecwd unnamed1" $sing "-save-temps=cwd $oaout" {} {{a--0.i a--0.s a--0.o $aout}}
-outest "$b-44 exe savecwd unnamed2" $mult "-save-temps=cwd $oaout" {} {{a--1.i a--1.s a--1.o a--2.i a--2.s a--2.o $aout}}
-outest "$b-45 exe savecwd named0" $sing "-o $b-0.exe -save-temps=cwd" {} {{-0.i -0.s -0.o -0.exe}}
-outest "$b-46 exe savecwd namedb" $sing "-o $b.exe -save-temps=cwd" {} {{--0.i --0.s --0.o .exe}}
-outest "$b-47 exe savecwd named2" $mult "-o $b.exe -save-temps=cwd" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe}}
+outest "$b-35 obj savecwd unnamed1" $sing "-c -save-temps=cwd" {} {{-0.i -0.s -0.o a.args.0 a.args.3 a.args.2 a.args.1}}
+outest "$b-36 obj savecwd unnamed2" $mult "-c -save-temps=cwd" {} {{-1.i -1.s -1.o -2.i -2.s -2.o a.args.6 a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
+outest "$b-37 cpp savecwd named0" $sing "-E -o $b-0.i -save-temps=cwd" {} {{-0.i outputs-0.args.1 a.args.0}}
+outest "$b-38 asm savecwd named0" $sing "-S -o $b-0.s -save-temps=cwd" {} {{-0.i -0.s outputs-0.args.2 a.args.0 a.args.1}}
+outest "$b-39 obj savecwd named0" $sing "-c -o $b-0.o -save-temps=cwd" {} {{-0.i -0.s -0.o outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-40 cpp savecwd namedb" $sing "-E -o $b.i -save-temps=cwd" {} {{.i outputs.args.1 a.args.0}}
+outest "$b-41 asm savecwd namedb" $sing "-S -o $b.s -save-temps=cwd" {} {{.i .s outputs.args.2 a.args.0 a.args.1}}
+outest "$b-42 obj savecwd namedb" $sing "-c -o $b.o -save-temps=cwd" {} {{.i .s .o outputs.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-43 exe savecwd unnamed1" $sing "-save-temps=cwd $oaout" {} {{a--0.i a--0.s a--0.o $aout a-args.2 a-args.0 a-args.1 a.args.4 a.args.3}}
+outest "$b-44 exe savecwd unnamed2" $mult "-save-temps=cwd $oaout" {} {{a--1.i a--1.s a--1.o a--2.i a--2.s a--2.o $aout a-args.2 a-args.4 a-args.0 a-args.3 a-args.5 a-args.1 a.args.7 a.args.6}}
+outest "$b-45 exe savecwd named0" $sing "-o $b-0.exe -save-temps=cwd" {} {{-0.i -0.s -0.o -0.exe outputs-0.args.4 outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-46 exe savecwd namedb" $sing "-o $b.exe -save-temps=cwd" {} {{--0.i --0.s --0.o .exe outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2}}
+outest "$b-47 exe savecwd named2" $mult "-o $b.exe -save-temps=cwd" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe outputs-args.1 outputs-args.4 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2}}
 
-outest "$b-48 cpp savecwd namedir0" $sing "-E -o o/$b-0.i -save-temps=cwd" {o/} {{-0.i} {}}
-outest "$b-49 asm savecwd namedir0" $sing "-S -o o/$b-0.s -save-temps=cwd" {o/} {{-0.s} {-0.i}}
-outest "$b-50 obj savecwd namedir0" $sing "-c -o o/$b-0.o -save-temps=cwd" {o/} {{-0.o} {-0.i -0.s}}
-outest "$b-51 cpp savecwd namedir" $sing "-E -o o/$b.i -save-temps=cwd" {o/} {{.i} {}}
-outest "$b-52 asm savecwd namedir" $sing "-S -o o/$b.s -save-temps=cwd" {o/} {{.s} {.i}}
-outest "$b-53 obj savecwd namedir" $sing "-c -o o/$b.o -save-temps=cwd" {o/} {{.o} {.i .s}}
-outest "$b-54 exe savecwd namedir0" $sing "-o o/$b-0.exe -save-temps=cwd" {o/} {{-0.exe} {-0.i -0.s -0.o}}
-outest "$b-55 exe savecwd namedirb" $sing "-o o/$b.exe -save-temps=cwd" {o/} {{.exe} {--0.i --0.s --0.o}}
-outest "$b-56 exe savecwd namedir2" $mult "-o o/$b.exe -save-temps=cwd" {o/} {{.exe} {--1.i --1.s --1.o --2.i --2.s --2.o}}
+outest "$b-48 cpp savecwd namedir0" $sing "-E -o o/$b-0.i -save-temps=cwd" {o/} {{-0.i} {a.args.0 outputs-0.args.1}}
+outest "$b-49 asm savecwd namedir0" $sing "-S -o o/$b-0.s -save-temps=cwd" {o/} {{-0.s} {-0.i a.args.0 a.args.1 outputs-0.args.2}}
+outest "$b-50 obj savecwd namedir0" $sing "-c -o o/$b-0.o -save-temps=cwd" {o/} {{-0.o} {-0.i -0.s outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-51 cpp savecwd namedir" $sing "-E -o o/$b.i -save-temps=cwd" {o/} {{.i} {outputs.args.1 a.args.0}}
+outest "$b-52 asm savecwd namedir" $sing "-S -o o/$b.s -save-temps=cwd" {o/} {{.s} {.i outputs.args.2 a.args.0 a.args.1}}
+outest "$b-53 obj savecwd namedir" $sing "-c -o o/$b.o -save-temps=cwd" {o/} {{.o} {.i .s outputs.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-54 exe savecwd namedir0" $sing "-o o/$b-0.exe -save-temps=cwd" {o/} {{-0.exe} {-0.i -0.s -0.o outputs-0.args.4 outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-55 exe savecwd namedirb" $sing "-o o/$b.exe -save-temps=cwd" {o/} {{.exe} {--0.i --0.s --0.o outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2}}
+outest "$b-56 exe savecwd namedir2" $mult "-o o/$b.exe -save-temps=cwd" {o/} {{.exe} {--1.i --1.s --1.o --2.i --2.s --2.o outputs-args.1 outputs-args.4 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2}}
 
 # -save-temps=obj overrides the aux output location to that of the
 # main output
-outest "$b-57 obj saveobj unnamed1" $sing "-c -save-temps=obj" {} {{-0.i -0.s -0.o}}
-outest "$b-58 obj saveobj unnamed2" $mult "-c -save-temps=obj" {} {{-1.i -1.s -1.o -2.i -2.s -2.o}}
-outest "$b-59 cpp saveobj named0" $sing "-E -o $b-0.i -save-temps=obj" {} {{-0.i}}
-outest "$b-60 asm saveobj named0" $sing "-S -o $b-0.s -save-temps=obj" {} {{-0.i -0.s}}
-outest "$b-61 obj saveobj named0" $sing "-c -o $b-0.o -save-temps=obj" {} {{-0.i -0.s -0.o}}
-outest "$b-62 cpp saveobj namedb" $sing "-E -o $b.i -save-temps=obj" {} {{.i}}
-outest "$b-63 asm saveobj namedb" $sing "-S -o $b.s -save-temps=obj" {} {{.i .s}}
-outest "$b-64 obj saveobj namedb" $sing "-c -o $b.o -save-temps=obj" {} {{.i .s .o}}
-outest "$b-65 exe saveobj unnamed1" $sing "-save-temps=obj $oaout" {} {{a--0.i a--0.s a--0.o $aout}}
-outest "$b-66 exe saveobj unnamed2" $mult "-save-temps=obj $oaout" {} {{a--1.i a--1.s a--1.o a--2.i a--2.s a--2.o $aout}}
-outest "$b-67 exe saveobj named0" $sing "-o $b-0.exe -save-temps=obj" {} {{-0.i -0.s -0.o -0.exe}}
-outest "$b-68 exe saveobj namedb" $sing "-o $b.exe -save-temps=obj" {} {{--0.i --0.s --0.o .exe}}
-outest "$b-69 exe saveobj named2" $mult "-o $b.exe -save-temps=obj" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe}}
+outest "$b-57 obj saveobj unnamed1" $sing "-c -save-temps=obj" {} {{-0.i -0.s -0.o a.args.0 a.args.3 a.args.2 a.args.1}}
+outest "$b-58 obj saveobj unnamed2" $mult "-c -save-temps=obj" {} {{-1.i -1.s -1.o -2.i -2.s -2.o a.args.6 a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
+outest "$b-59 cpp saveobj named0" $sing "-E -o $b-0.i -save-temps=obj" {} {{-0.i outputs-0.args.1 a.args.0}}
+outest "$b-60 asm saveobj named0" $sing "-S -o $b-0.s -save-temps=obj" {} {{-0.i -0.s outputs-0.args.2 a.args.0 a.args.1}}
+outest "$b-61 obj saveobj named0" $sing "-c -o $b-0.o -save-temps=obj" {} {{-0.i -0.s -0.o outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-62 cpp saveobj namedb" $sing "-E -o $b.i -save-temps=obj" {} {{.i outputs.args.1 a.args.0}}
+outest "$b-63 asm saveobj namedb" $sing "-S -o $b.s -save-temps=obj" {} {{.i .s outputs.args.2 a.args.0 a.args.1}}
+outest "$b-64 obj saveobj namedb" $sing "-c -o $b.o -save-temps=obj" {} {{.i .s .o outputs.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-65 exe saveobj unnamed1" $sing "-save-temps=obj $oaout" {} {{a--0.i a--0.s a--0.o $aout a-args.2 a-args.0 a-args.1 a.args.4 a.args.3}}
+outest "$b-66 exe saveobj unnamed2" $mult "-save-temps=obj $oaout" {} {{a--1.i a--1.s a--1.o a--2.i a--2.s a--2.o $aout a-args.2 a-args.4 a-args.0 a-args.3 a-args.5 a-args.1 a.args.7 a.args.6}}
+outest "$b-67 exe saveobj named0" $sing "-o $b-0.exe -save-temps=obj" {} {{-0.i -0.s -0.o -0.exe outputs-0.args.4 outputs-0.args.3 a.args.0 a.args.2 a.args.1}}
+outest "$b-68 exe saveobj namedb" $sing "-o $b.exe -save-temps=obj" {} {{--0.i --0.s --0.o .exe outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2}}
+outest "$b-69 exe saveobj named2" $mult "-o $b.exe -save-temps=obj" {} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe outputs-args.1 outputs-args.4 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2}}
 
-outest "$b-70 cpp saveobj namedir0" $sing "-E -o o/$b-0.i -save-temps=obj" {o/} {{-0.i} {}}
-outest "$b-71 asm saveobj namedir0" $sing "-S -o o/$b-0.s -save-temps=obj" {o/} {{-0.i -0.s} {}}
-outest "$b-72 obj saveobj namedir0" $sing "-c -o o/$b-0.o -save-temps=obj" {o/} {{-0.i -0.s -0.o} {}}
-outest "$b-73 cpp saveobj namedir" $sing "-E -o o/$b.i -save-temps=obj" {o/} {{.i} {}}
-outest "$b-74 asm saveobj namedir" $sing "-S -o o/$b.s -save-temps=obj" {o/} {{.i .s} {}}
-outest "$b-75 obj saveobj namedir" $sing "-c -o o/$b.o -save-temps=obj" {o/} {{.i .s .o} {}}
-outest "$b-76 exe saveobj namedir0" $sing "-o o/$b-0.exe -save-temps=obj" {o/} {{-0.i -0.s -0.o -0.exe} {}}
-outest "$b-77 exe saveobj namedirb" $sing "-o o/$b.exe -save-temps=obj" {o/} {{--0.i --0.s --0.o .exe} {}}
-outest "$b-78 exe saveobj namedir2" $mult "-o o/$b.exe -save-temps=obj" {o/} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe} {}}
+outest "$b-70 cpp saveobj namedir0" $sing "-E -o o/$b-0.i -save-temps=obj" {o/} {{-0.i outputs-0.args.1} {}}
+outest "$b-71 asm saveobj namedir0" $sing "-S -o o/$b-0.s -save-temps=obj" {o/} {{-0.i -0.s outputs-0.args.2} {}}
+outest "$b-72 obj saveobj namedir0" $sing "-c -o o/$b-0.o -save-temps=obj" {o/} {{-0.i -0.s -0.o outputs-0.args.3} {}}
+outest "$b-73 cpp saveobj namedir" $sing "-E -o o/$b.i -save-temps=obj" {o/} {{.i outputs.args.1} {}}
+outest "$b-74 asm saveobj namedir" $sing "-S -o o/$b.s -save-temps=obj" {o/} {{.i .s outputs.args.2} {}}
+outest "$b-75 obj saveobj namedir" $sing "-c -o o/$b.o -save-temps=obj" {o/} {{.i .s .o outputs.args.3} {}}
+outest "$b-76 exe saveobj namedir0" $sing "-o o/$b-0.exe -save-temps=obj" {o/} {{-0.i -0.s -0.o -0.exe outputs-0.args.4 outputs-0.args.3} {}}
+outest "$b-77 exe saveobj namedirb" $sing "-o o/$b.exe -save-temps=obj" {o/} {{--0.i --0.s --0.o .exe outputs.args.4 outputs-args.1 outputs.args.3 outputs-args.0 outputs-args.2} {}}
+outest "$b-78 exe saveobj namedir2" $mult "-o o/$b.exe -save-temps=obj" {o/} {{--1.i --1.s --1.o --2.i --2.s --2.o .exe outputs-args.1 outputs-args.4 outputs-args.5 outputs-args.3 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2} {}}
 
 # Check -dumpdir overriding by -save-temps=*, and -save-temps
 # non-overriding, with one catch: the presence of a given dumpdir,
@@ -445,9 +445,9 @@ outest "$b-78 exe saveobj namedir2" $mult "-o o/$b.exe -save-temps=obj" {o/} {{-
 outest "$b-79 exe sobjovr namedir0" $sing "-o o/$b-0.exe -dumpdir no/ -save-temps=obj -save-temps" {o/} {{-0.i -0.s -0.o -0.exe} {}}
 outest "$b-80 exe sobjovr namedirb" $sing "-o o/$b.exe -dumpdir no/ -save-temps=obj -save-temps" {o/} {{-0.i -0.s -0.o .exe} {}}
 outest "$b-81 exe sobjovr namedir2" $mult "-o o/$b.exe -dumpdir no/ -save-temps=obj -save-temps" {o/} {{-1.i -1.s -1.o -2.i -2.s -2.o .exe} {}}
-outest "$b-82 exe scwdovr namedir0" $sing "-o o/$b-0.exe -dumpdir o/ -save-temps=cwd -save-temps" {o/} {{-0.exe} {-0.i -0.s -0.o}}
-outest "$b-83 exe scwdovr namedirb" $sing "-o o/$b.exe -dumpdir o/ -save-temps=cwd -save-temps" {o/} {{.exe} {-0.i -0.s -0.o}}
-outest "$b-84 exe scwdovr namedir2" $mult "-o o/$b.exe -dumpdir o/ -save-temps=cwd -save-temps" {o/} {{.exe} {-1.i -1.s -1.o -2.i -2.s -2.o}}
+outest "$b-82 exe scwdovr namedir0" $sing "-o o/$b-0.exe -dumpdir o/ -save-temps=cwd -save-temps" {o/} {{-0.exe} {-0.i -0.s -0.o a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
+outest "$b-83 exe scwdovr namedirb" $sing "-o o/$b.exe -dumpdir o/ -save-temps=cwd -save-temps" {o/} {{.exe} {-0.i -0.s -0.o a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
+outest "$b-84 exe scwdovr namedir2" $mult "-o o/$b.exe -dumpdir o/ -save-temps=cwd -save-temps" {o/} {{.exe} {-1.i -1.s -1.o -2.i -2.s -2.o a.args.0  a.args.1  a.args.2  a.args.3  a.args.4  a.args.5  a.args.6  a.args.7 }}
 outest "$b-85 exe ddstovr namedir0" $sing "-o $b-0.exe -dumpdir o/ -save-temps" {o/} {{-0.i -0.s -0.o} {-0.exe}}
 outest "$b-86 exe ddstovr namedirb" $sing "-o $b.exe -dumpdir o/ -save-temps" {o/} {{-0.i -0.s -0.o} {.exe}}
 outest "$b-87 exe ddstovr namedir2" $mult "-o $b.exe -dumpdir o/ -save-temps" {o/} {{-1.i -1.s -1.o -2.i -2.s -2.o} {.exe}}
@@ -500,34 +500,33 @@ outest "$b-120 exe auxdump namedir2" $mult "-o o/$b.exe -fdump-rtl-final -fstack
 
 # Check that -save-temps doesn't break compiler aux or dumps as it
 # changes temp file names.
-outest "$b-121 asm auxdmps 1" $sing "-S -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s}}
-outest "$b-122 asm auxdmps 2" $mult "-S -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-1.i -1.c.???r.final -1.su -1.s -2.i -2.c.???r.final -2.su -2.s}}
-outest "$b-123 obj auxdmps unnamed1" $sing "-c -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o}}
-outest "$b-124 obj auxdmps unnamed2" $mult "-c -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-1.i -1.c.???r.final -1.su -1.s !!$gspd -1.dwo !0 -1.o -2.i -2.c.???r.final -2.su -2.s !!$gspd -2.dwo !0 -2.o}}
+outest "$b-121 asm auxdmps 1" $sing "-S -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s a.args.0 a.args.2 a.args.1}}
+outest "$b-122 asm auxdmps 2" $mult "-S -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-1.i -1.c.???r.final -1.su -1.s -2.i -2.c.???r.final -2.su -2.s a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
+outest "$b-123 obj auxdmps unnamed1" $sing "-c -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
+outest "$b-124 obj auxdmps unnamed2" $mult "-c -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-1.i -1.c.???r.final -1.su -1.s !!$gspd -1.dwo !0 -1.o -2.i -2.c.???r.final -2.su -2.s !!$gspd -2.dwo !0 -2.o a.args.7 a.args.6 a.args.8 a.args.9 a.args.0 a.args.4 a.args.10 a.args.3 a.args.2 a.args.5 a.args.1}}
 
-outest "$b-125 cpp auxdmps named0" $sing "-E -o $b-0.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i}}
-outest "$b-126 asm auxdmps named0" $sing "-S -o $b-0.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s}}
-outest "$b-127 obj auxdmps named0" $sing "-c -o $b-0.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o}}
-outest "$b-128 cpp auxdmps namedb" $sing "-E -o $b.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{.i}}
-outest "$b-129 asm auxdmps namedb" $sing "-S -o $b.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{.i .c.???r.final .su .s}}
-outest "$b-130 obj auxdmps namedb" $sing "-c -o $b.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{.i .c.???r.final .su .s !!$gspd .dwo !0 .o}}
+outest "$b-125 cpp auxdmps named0" $sing "-E -o $b-0.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i outputs-0.args.1 a.args.0}}
+outest "$b-126 asm auxdmps named0" $sing "-S -o $b-0.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s outputs-0.args.2 a.args.0 a.args.1}}
+outest "$b-127 obj auxdmps named0" $sing "-c -o $b-0.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o outputs-0.args.5 a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
+outest "$b-128 cpp auxdmps namedb" $sing "-E -o $b.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{.i outputs.args.1 a.args.0}}
+outest "$b-129 asm auxdmps namedb" $sing "-S -o $b.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{.i .c.???r.final .su .s outputs.args.2 a.args.0 a.args.1}}
+outest "$b-130 obj auxdmps namedb" $sing "-c -o $b.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{.i .c.???r.final .su .s !!$gspd .dwo !0 .o outputs.args.5 a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
 
-outest "$b-131 exe auxdmps unnamed1" $sing "-fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps $oaout" {} {{a--0.i a--0.c.???r.final a--0.su a--0.s !!$gspd a--0.dwo !0 a--0.o $aout}}
-outest "$b-132 exe auxdmps unnamed2" $mult "-fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps $oaout" {} {{a--1.i a--1.c.???r.final a--1.su a--1.s !!$gspd a--1.dwo !0 a--1.o a--2.i a--2.c.???r.final a--2.su a--2.s !!$gspd a--2.dwo !0 a--2.o $aout}}
-outest "$b-133 exe auxdmps named0" $sing "-o $b-0.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o -0.exe}}
-outest "$b-134 exe auxdmps namedb" $sing "-o $b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{--0.i --0.c.???r.final --0.su --0.s !!$gspd --0.dwo !0 --0.o .exe}}
-outest "$b-135 exe auxdmps named2" $mult "-o $b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{--1.i --1.c.???r.final --1.su --1.s !!$gspd --1.dwo !0 --1.o --2.i --2.c.???r.final --2.su --2.s !!$gspd --2.dwo !0 --2.o .exe}}
+outest "$b-131 exe auxdmps unnamed1" $sing "-fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps $oaout" {} {{a--0.i a--0.c.???r.final a--0.su a--0.s !!$gspd a--0.dwo !0 a--0.o $aout a-args.2 a-args.4 a-args.0 a-args.3 a-args.1 a.args.6 a.args.5}}
+outest "$b-132 exe auxdmps unnamed2" $mult "-fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps $oaout" {} {{a--1.i a--1.c.???r.final a--1.su a--1.s !!$gspd a--1.dwo !0 a--1.o a--2.i a--2.c.???r.final a--2.su a--2.s !!$gspd a--2.dwo !0 a--2.o $aout a-args.7 a-args.9 a-args.2 a-args.4 a-args.0 a-args.6 a-args.8 a-args.3 a-args.5 a-args.1 a.args.10 a.args.11}}
+outest "$b-133 exe auxdmps named0" $sing "-o $b-0.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o -0.exe outputs-0.args.5 outputs-0.args.6 a.args.0 a.args.4 a.args.3 a.args.2 a.args.1}}
+outest "$b-134 exe auxdmps namedb" $sing "-o $b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{--0.i --0.c.???r.final --0.su --0.s !!$gspd --0.dwo !0 --0.o .exe outputs.args.5 outputs-args.1 outputs-args.4 outputs-args.3 outputs.args.6 outputs-args.0 outputs-args.2}}
+outest "$b-135 exe auxdmps named2" $mult "-o $b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {} {{--1.i --1.c.???r.final --1.su --1.s !!$gspd --1.dwo !0 --1.o --2.i --2.c.???r.final --2.su --2.s !!$gspd --2.dwo !0 --2.o .exe outputs-args.7 outputs-args.1 outputs-args.4 outputs-args.8 outputs.args.11 outputs-args.5 outputs-args.3 outputs-args.9 outputs-args.0 outputs.args.10 outputs-args.6 outputs-args.2}}
 
-outest "$b-136 cpp auxdmps namedir0" $sing "-E -o o/$b-0.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i} {}}
-outest "$b-137 asm auxdmps namedir0" $sing "-S -o o/$b-0.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i -0.c.???r.final -0.su -0.s} {}}
-outest "$b-138 obj auxdmps namedir0" $sing "-c -o o/$b-0.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o} {}}
-outest "$b-139 cpp auxdmps namedir" $sing "-E -o o/$b.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{.i} {}}
-outest "$b-140 asm auxdmps namedir" $sing "-S -o o/$b.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{.i .c.???r.final .su .s} {}}
-outest "$b-141 obj auxdmps namedir" $sing "-c -o o/$b.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{.i .c.???r.final .su .s !!$gspd .dwo !0 .o} {}}
-outest "$b-142 exe auxdmps namedir0" $sing "-o o/$b-0.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o -0.exe} {}}
-outest "$b-143 exe auxdmps namedirb" $sing "-o o/$b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{--0.i --0.c.???r.final --0.su --0.s !!$gspd --0.dwo !0 --0.o .exe} {}}
-outest "$b-144 exe auxdmps namedir2" $mult "-o o/$b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{--1.i --1.c.???r.final --1.su --1.s !!$gspd --1.dwo !0 --1.o --2.i --2.c.???r.final --2.su --2.s !!$gspd --2.dwo !0 --2.o .exe} {}}
-
+outest "$b-136 cpp auxdmps namedir0" $sing "-E -o o/$b-0.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i outputs-0.args.1} {}}
+outest "$b-137 asm auxdmps namedir0" $sing "-S -o o/$b-0.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i -0.c.???r.final -0.su -0.s outputs-0.args.2} {}}
+outest "$b-138 obj auxdmps namedir0" $sing "-c -o o/$b-0.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o outputs-0.args.5} {}}
+outest "$b-139 cpp auxdmps namedir" $sing "-E -o o/$b.i -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{.i outputs.args.1} {}}
+outest "$b-140 asm auxdmps namedir" $sing "-S -o o/$b.s -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{.i .c.???r.final .su .s outputs.args.2} {}}
+outest "$b-141 obj auxdmps namedir" $sing "-c -o o/$b.o -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{.i .c.???r.final .su .s !!$gspd .dwo !0 .o outputs.args.5} {}}
+outest "$b-142 exe auxdmps namedir0" $sing "-o o/$b-0.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{-0.i -0.c.???r.final -0.su -0.s !!$gspd -0.dwo !0 -0.o -0.exe outputs-0.args.5 outputs-0.args.6} {}}
+outest "$b-143 exe auxdmps namedirb" $sing "-o o/$b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{--0.i --0.c.???r.final --0.su --0.s !!$gspd --0.dwo !0 --0.o .exe outputs.args.5 outputs-args.1 outputs-args.4 outputs-args.3 outputs.args.6 outputs-args.0 outputs-args.2} {}}
+outest "$b-144 exe auxdmps namedir2" $mult "-o o/$b.exe -fdump-rtl-final -fstack-usage $gsplit_dwarf -save-temps" {o/} {{--1.i --1.c.???r.final --1.su --1.s !!$gspd --1.dwo !0 --1.o --2.i --2.c.???r.final --2.su --2.s !!$gspd --2.dwo !0 --2.o .exe outputs-args.7 outputs-args.1 outputs-args.4 outputs-args.8 outputs.args.11 outputs-args.5 outputs-args.3 outputs-args.9 outputs-args.0 outputs.args.10 outputs-args.6 outputs-args.2} {}}
 
 # Check that dumpdir changes the location of non-primary outputs
 outest "$b-145 asm dumpdir 1" $sing "-S -fdump-rtl-final -fstack-usage $gsplit_dwarf -dumpdir od/" {od/} {{-0.c.???r.final -0.su} {-0.s}}
@@ -708,7 +707,7 @@ outest "$b-279 exe dbwoutdda namedir2" $mult "-o o/$b.exe -fdump-rtl-final -fsta
 
 # -fcompare-debug
 outest "$b-280 obj compare-debug" $sing "-c -fcompare-debug -fdump-rtl-final -fstack-usage $gsplit_dwarf -fdump-final-insns" {} {{-0.c.???r.final -0.su -0.c.gkd -0.gk.c.???r.final !!$gspd -0.dwo !0 -0.o}}
-outest "$b-281 obj compare-debug save-temps" $sing "-c -fcompare-debug -save-temps -fdump-rtl-final -fstack-usage $gsplit_dwarf -fdump-final-insns" {} {{-0.c.???r.final -0.su -0.i -0.c.gkd -0.s -0.gk.i -0.gk.c.???r.final -0.gk.c.gkd !!$gspd -0.dwo !0 -0.o}}
+outest "$b-281 obj compare-debug save-temps" $sing "-c -fcompare-debug -save-temps -fdump-rtl-final -fstack-usage $gsplit_dwarf -fdump-final-insns" {} {{-0.c.???r.final -0.su -0.i -0.c.gkd -0.s -0.gk.i -0.gk.c.???r.final -0.gk.c.gkd !!$gspd -0.dwo !0 -0.o a.args.7 a.args.6 a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
 
 if !$skip_lto {
 
@@ -729,7 +728,7 @@ outest "$b-291 lto mult named-2" $mult "-o $b.exe -O2 -flto -fno-use-linker-plug
 outest "$b-292 lto sing nameddir-2" $sing "-o dir/$b.exe -O2 -flto -fno-use-linker-plugin -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--0.c.???i.icf --0.c.???r.final .wpa.???i.icf .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .exe} {}}
 outest "$b-293 lto mult nameddir-2" $mult "-o dir/$b.exe -O2 -flto -fno-use-linker-plugin -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--1.c.???i.icf --1.c.???r.final --2.c.???i.icf --2.c.???r.final .wpa.???i.icf .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .exe} {}}
 if !$skip_atsave {
-outest "$b-294 lto sing unnamed-3" $sing "@$devnull -O2 -flto -fno-use-linker-plugin -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage -save-temps $oaout" {} {{a--0.c.???i.icf a--0.c.???r.final a.wpa.???i.icf a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a--0.o a--0.s a--0.i a.ltrans0.o a.ltrans.out a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.args.0 a.ltrans0.ltrans.s a.wpa.args.0 a.lto_args a.ld1_args a.ltrans_args a.ltrans0.ltrans.args.0 a.ld_args $aout}}
+outest "$b-294 lto sing unnamed-3" $sing "@/dev/null -O2 -flto -fno-use-linker-plugin -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage -save-temps $oaout" {} {{a--0.c.???i.icf a--0.c.???r.final a.wpa.???i.icf a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a--0.o a--0.s a--0.i a.ltrans0.o a.ltrans.out a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.s a.wpa.args.0 a.lto_args a.ld1_args a.ltrans_args a.ltrans0.ltrans.args.0 a.ld_args $aout a-args.2 a-args.0 a-args.1 a.ltrans0.ltrans.args.3 a.ltrans0.ltrans.args.1 a.args.4 a.wpa.args.1 a.wpa.args.2 a.args.3 a.ltrans0.ltrans.args.2 a.args.5}}
 }
 }
 
@@ -796,21 +795,20 @@ outest "$b-335 lto sing empty dumpdir empty dumpbase namedb" $sing "-dumpdir \"\
 outest "$b-336 lto mult empty dumpdir empty dumpbase namedb" $mult "-dumpdir \"\" -dumpbase \"\" -o dir/$b.exe -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{.exe} {-1.c.???i.icf !$ltop -1.c.???r.final !0 -2.c.???i.icf !$ltop -2.c.???r.final !0 .wpa.???i.icf .ltrans0.ltrans.???r.final .ltrans0.ltrans.su}}
 
 # Now -flto with -save-temps, not exhaustive.
-outest "$b-337 lto st sing empty dumpbase unnamed" $sing "-dumpbase \"\" -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{-0.i -0.s -0.o -0.c.???i.icf !$ltop -0.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout}}
-outest "$b-338 lto st mult empty dumpbase unnamed" $mult "-dumpbase \"\" -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{-1.i -1.s -1.o -1.c.???i.icf !$ltop -1.c.???r.final !0 -2.i -2.s -2.o -2.c.???i.icf !$ltop -2.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout}}
-outest "$b-339 lto st sing dumpdir empty dumpbase named" $sing "-dumpdir dir/ -dumpbase \"\" -o $b-0.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-0.i -0.s -0.o -0.c.???i.icf !$ltop -0.c.???r.final !!$ltop -0.lto_wrapper_args !0 -0.wpa.???i.icf -0.ltrans.out -0.ltrans_args !!$ltop -0.res !0 -0.ltrans0.o -0.ltrans0.ltrans.???r.final -0.ltrans0.ltrans.su -0.ltrans0.ltrans.s -0.ltrans0.ltrans.o -0.ltrans0.ltrans_args -0.ltrans0.ltrans.args.0 -0.wpa.args.0} {-0.exe}}
-outest "$b-340 lto st mult dumpdir empty dumpbase named" $mult "-dumpdir dir/ -dumpbase \"\" -o $b-1.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-1.i -1.s -1.o -1.c.???i.icf !$ltop -1.c.???r.final !0 -2.i -2.s -2.o -2.c.???i.icf !$ltop -2.c.???r.final !!$ltop -1.lto_wrapper_args !0 -1.wpa.???i.icf -1.ltrans.out -1.ltrans_args !!$ltop -1.res !0 -1.ltrans0.o -1.ltrans0.ltrans.???r.final -1.ltrans0.ltrans.su -1.ltrans0.ltrans.s -1.ltrans0.ltrans.o -1.ltrans0.ltrans_args -1.ltrans0.ltrans.args.0 -1.wpa.args.0} {-1.exe}}
-outest "$b-341 lto st sing empty dumpbase namedb" $sing "-dumpbase \"\" -o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-0.i -0.s -0.o -0.c.???i.icf !$ltop -0.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe} {}}
-outest "$b-342 lto st mult empty dumpbase namedb" $mult "-dumpbase \"\" -o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-1.i -1.s -1.o -1.c.???i.icf !$ltop -1.c.???r.final !0 -2.i -2.s -2.o -2.c.???i.icf !$ltop -2.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe} {}}
+outest "$b-337 lto st sing empty dumpbase unnamed" $sing "-dumpbase \"\" -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{-0.i -0.s -0.o -0.c.???i.icf !$ltop -0.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout a.ltrans0.ltrans.args.3 a.ltrans0.ltrans.args.1 a.args.0 a.args.4 a.wpa.args.1 a.wpa.args.2 a.args.3 a.ltrans0.ltrans.args.2 a.args.2 a.args.1}}
+outest "$b-338 lto st mult empty dumpbase unnamed" $mult "-dumpbase \"\" -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{-1.i -1.s -1.o -1.c.???i.icf !$ltop -1.c.???r.final !0 -2.i -2.s -2.o -2.c.???i.icf !$ltop -2.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout a.args.7 a.args.6 a.ltrans0.ltrans.args.3 a.ltrans0.ltrans.args.1 a.args.0 a.args.4 a.wpa.args.1 a.wpa.args.2 a.args.3 a.ltrans0.ltrans.args.2 a.args.2 a.args.5 a.args.1}}
+outest "$b-339 lto st sing dumpdir empty dumpbase named" $sing "-dumpdir dir/ -dumpbase \"\" -o $b-0.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-0.i -0.s -0.o -0.c.???i.icf !$ltop -0.c.???r.final !!$ltop -0.lto_wrapper_args !0 -0.wpa.???i.icf -0.ltrans.out -0.ltrans_args !!$ltop -0.res !0 -0.ltrans0.o -0.ltrans0.ltrans.???r.final -0.ltrans0.ltrans.su -0.ltrans0.ltrans.s -0.ltrans0.ltrans.o -0.ltrans0.ltrans_args -0.ltrans0.ltrans.args.0 -0.wpa.args.0 outputs-0.args.4 outputs-0.ltrans0.ltrans.args.3 outputs-0.wpa.args.1 outputs-0.wpa.args.2 outputs-0.ltrans0.ltrans.args.1 outputs-0.ltrans0.ltrans.args.2 outputs-0.args.3} {-0.exe}}
+outest "$b-340 lto st mult dumpdir empty dumpbase named" $mult "-dumpdir dir/ -dumpbase \"\" -o $b-1.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-1.i -1.s -1.o -1.c.???i.icf !$ltop -1.c.???r.final !0 -2.i -2.s -2.o -2.c.???i.icf !$ltop -2.c.???r.final !!$ltop -1.lto_wrapper_args !0 -1.wpa.???i.icf -1.ltrans.out -1.ltrans_args !!$ltop -1.res !0 -1.ltrans0.o -1.ltrans0.ltrans.???r.final -1.ltrans0.ltrans.su -1.ltrans0.ltrans.s -1.ltrans0.ltrans.o -1.ltrans0.ltrans_args -1.ltrans0.ltrans.args.0 -1.wpa.args.0 outputs-1.args.7 outputs-1.wpa.args.1 outputs-1.args.6 outputs-1.ltrans0.ltrans.args.3 outputs-1.ltrans0.ltrans.args.2 outputs-1.ltrans0.ltrans.args.1 outputs-1.wpa.args.2} {-1.exe}}
+outest "$b-341 lto st sing empty dumpbase namedb" $sing "-dumpbase \"\" -o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-0.i -0.s -0.o -0.c.???i.icf !$ltop -0.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe outputs.ltrans0.ltrans.args.1 outputs.args.4 outputs.ltrans0.ltrans.args.3 outputs.wpa.args.1 outputs.args.3 outputs.ltrans0.ltrans.args.2 outputs.wpa.args.2} {}}
+outest "$b-342 lto st mult empty dumpbase namedb" $mult "-dumpbase \"\" -o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{-1.i -1.s -1.o -1.c.???i.icf !$ltop -1.c.???r.final !0 -2.i -2.s -2.o -2.c.???i.icf !$ltop -2.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe outputs.ltrans0.ltrans.args.1 outputs.ltrans0.ltrans.args.3 outputs.wpa.args.1 outputs.ltrans0.ltrans.args.2 outputs.wpa.args.2 outputs.args.7 outputs.args.6} {}}
 
 # lto save-temps without -dumpbase.
-outest "$b-343 lto st sing unnamed" $sing "-save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{a--0.i a--0.s a--0.o a--0.c.???i.icf !$ltop a--0.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout}}
-outest "$b-344 lto st mult unnamed" $mult "-save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{a--1.i a--1.s a--1.o a--1.c.???i.icf !$ltop a--1.c.???r.final !0 a--2.i a--2.s a--2.o a--2.c.???i.icf !$ltop a--2.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout}}
-outest "$b-345 lto st sing dumpdir named" $sing "-dumpdir dir/$b- -o $b-0.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--0.i --0.s --0.o --0.c.???i.icf !$ltop --0.c.???r.final !!$ltop -lto_wrapper_args !0 -wpa.???i.icf -ltrans.out -ltrans_args !!$ltop -res !0 -ltrans0.o -ltrans0.ltrans.???r.final -ltrans0.ltrans.su -ltrans0.ltrans.s -ltrans0.ltrans.o -ltrans0.ltrans_args -ltrans0.ltrans.args.0 -wpa.args.0} {-0.exe}}
-outest "$b-346 lto st mult dumpdir named" $mult "-dumpdir dir/$b- -o $b-1.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--1.i --1.s --1.o --1.c.???i.icf !$ltop --1.c.???r.final !0 --2.i --2.s --2.o --2.c.???i.icf !$ltop --2.c.???r.final !!$ltop -lto_wrapper_args !0 -wpa.???i.icf -ltrans.out -ltrans_args !!$ltop -res !0 -ltrans0.o -ltrans0.ltrans.???r.final -ltrans0.ltrans.su -ltrans0.ltrans.s -ltrans0.ltrans.o -ltrans0.ltrans_args -ltrans0.ltrans.args.0 -wpa.args.0} {-1.exe}}
-outest "$b-347 lto st sing namedb" $sing "-o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--0.i --0.s --0.o --0.c.???i.icf !$ltop --0.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe} {}}
-outest "$b-348 lto st mult namedb" $mult "-o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--1.i --1.s --1.o --1.c.???i.icf !$ltop --1.c.???r.final !0 --2.i --2.s --2.o --2.c.???i.icf !$ltop --2.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe} {}}
-
+outest "$b-343 lto st sing unnamed" $sing "-save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{a--0.i a--0.s a--0.o a--0.c.???i.icf !$ltop a--0.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout a-args.2 a-args.0 a-args.1 a.ltrans0.ltrans.args.3 a.ltrans0.ltrans.args.1 a.args.4 a.wpa.args.1 a.wpa.args.2 a.args.3 a.ltrans0.ltrans.args.2}}
+outest "$b-344 lto st mult unnamed" $mult "-save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage $oaout" {} {{a--1.i a--1.s a--1.o a--1.c.???i.icf !$ltop a--1.c.???r.final !0 a--2.i a--2.s a--2.o a--2.c.???i.icf !$ltop a--2.c.???r.final !!$ltop a.lto_wrapper_args !0 a.wpa.???i.icf a.ltrans.out a.ltrans_args !!$ltop a.res !0 a.ltrans0.o a.ltrans0.ltrans.???r.final a.ltrans0.ltrans.su a.ltrans0.ltrans.s a.ltrans0.ltrans.o a.ltrans0.ltrans_args a.ltrans0.ltrans.args.0 a.wpa.args.0 $aout a-args.2 a-args.4 a-args.0 a-args.3 a-args.5 a-args.1 a.args.7 a.args.6 a.ltrans0.ltrans.args.3 a.ltrans0.ltrans.args.1 a.wpa.args.1 a.wpa.args.2 a.ltrans0.ltrans.args.2}}
+outest "$b-345 lto st sing dumpdir named" $sing "-dumpdir dir/$b- -o $b-0.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--0.i --0.s --0.o --0.c.???i.icf !$ltop --0.c.???r.final !!$ltop -lto_wrapper_args !0 -wpa.???i.icf -ltrans.out -ltrans_args !!$ltop -res !0 -ltrans0.o -ltrans0.ltrans.???r.final -ltrans0.ltrans.su -ltrans0.ltrans.s -ltrans0.ltrans.o -ltrans0.ltrans_args -ltrans0.ltrans.args.0 -wpa.args.0 outputs-.args.3 outputs-ltrans0.ltrans.args.1 outputs-.args.4 outputs-.args.1 outputs-.args.0 outputs-ltrans0.ltrans.args.2 outputs-ltrans0.ltrans.args.3 outputs-wpa.args.2 outputs-wpa.args.1 outputs-.args.2} {-0.exe}}
+outest "$b-346 lto st mult dumpdir named" $mult "-dumpdir dir/$b- -o $b-1.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--1.i --1.s --1.o --1.c.???i.icf !$ltop --1.c.???r.final !0 --2.i --2.s --2.o --2.c.???i.icf !$ltop --2.c.???r.final !!$ltop -lto_wrapper_args !0 -wpa.???i.icf -ltrans.out -ltrans_args !!$ltop -res !0 -ltrans0.o -ltrans0.ltrans.???r.final -ltrans0.ltrans.su -ltrans0.ltrans.s -ltrans0.ltrans.o -ltrans0.ltrans_args -ltrans0.ltrans.args.0 -wpa.args.0 outputs-.args.3 outputs-.args.5 outputs-ltrans0.ltrans.args.1 outputs-.args.4 outputs-.args.1 outputs-.args.0 outputs-ltrans0.ltrans.args.2 outputs-ltrans0.ltrans.args.3 outputs-wpa.args.2 outputs-.args.6 outputs-wpa.args.1 outputs-.args.2 outputs-.args.7} {-1.exe}}
+outest "$b-347 lto st sing namedb" $sing "-o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--0.i --0.s --0.o --0.c.???i.icf !$ltop --0.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe outputs.ltrans0.ltrans.args.1 outputs.args.4 outputs-args.1 outputs.ltrans0.ltrans.args.3 outputs.wpa.args.1 outputs.args.3 outputs.ltrans0.ltrans.args.2 outputs.wpa.args.2 outputs-args.0 outputs-args.2} {}}
+outest "$b-348 lto st mult namedb" $mult "-o dir/$b.exe -save-temps -O2 -flto -flto-partition=one -fdump-ipa-icf-optimized -fdump-rtl-final -fstack-usage" {dir/} {{--1.i --1.s --1.o --1.c.???i.icf !$ltop --1.c.???r.final !0 --2.i --2.s --2.o --2.c.???i.icf !$ltop --2.c.???r.final !!$ltop .lto_wrapper_args !0 .wpa.???i.icf .ltrans.out .ltrans_args !!$ltop .res !0 .ltrans0.o .ltrans0.ltrans.???r.final .ltrans0.ltrans.su .ltrans0.ltrans.s .ltrans0.ltrans.o .ltrans0.ltrans_args .ltrans0.ltrans.args.0 .wpa.args.0 .exe outputs.ltrans0.ltrans.args.1 outputs-args.1 outputs.ltrans0.ltrans.args.3 outputs-args.4 outputs.wpa.args.1 outputs.ltrans0.ltrans.args.2 outputs-args.5 outputs-args.3 outputs.wpa.args.2 outputs.args.7 outputs.args.6 outputs-args.0 outputs-args.2} {}}
 # !$skip_lto
 }
 
@@ -824,7 +822,7 @@ outest "$b-353 single  -c  -o -dbx.c" $sing "-c -o dir/$b.o -dumpbase-ext .c -fd
 outest "$b-354 mult  -c  -dd -dbx.c" $mult "-c -dumpdir dir/ -dumpbase-ext .c -fdump-rtl-final -fstack-usage $gsplit_dwarf" {dir/} {{-1.c.???r.final -1.su !!$gspd -1.dwo !0 -2.c.???r.final -2.su !!$gspd -2.dwo} {-1.o -2.o}}
 outest "$b-355 single  -c  -o -dbx.x" $sing "-c -o dir/$b.o -dumpbase-ext .x -fdump-rtl-final -fstack-usage $gsplit_dwarf" {dir/} {{.c.???r.final .su !!$gspd .dwo !0 .o} {}}
 outest "$b-356 mult  -c  -dd -dbx.x" $mult "-c -dumpdir dir/ -dumpbase-ext .x -fdump-rtl-final -fstack-usage $gsplit_dwarf" {dir/} {{-1.c.???r.final -1.su !!$gspd -1.dwo !0 -2.c.???r.final -2.su !!$gspd -2.dwo} {-1.o -2.o}}
-outest "$b-357 obj compare-debug save-temps -dbx.x" $sing "-c -fcompare-debug -save-temps -fdump-rtl-final -fstack-usage $gsplit_dwarf -fdump-final-insns -dumpbase-ext .x" {} {{-0.c.???r.final -0.su -0.i -0.c.gkd -0.s -0.gk.i -0.gk.c.???r.final -0.gk.c.gkd !!$gspd -0.dwo !0 -0.o}}
+outest "$b-357 obj compare-debug save-temps -dbx.x" $sing "-c -fcompare-debug -save-temps -fdump-rtl-final -fstack-usage $gsplit_dwarf -fdump-final-insns -dumpbase-ext .x" {} {{-0.c.???r.final -0.su -0.i -0.c.gkd -0.s -0.gk.i -0.gk.c.???r.final -0.gk.c.gkd !!$gspd -0.dwo !0 -0.o a.args.7 a.args.6 a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
 # -dumpbase-ext is dropped if identical to -dumpbase.
 outest "$b-358 asm db=dbext 1" $sing "-S -fdump-rtl-final -fstack-usage $gsplit_dwarf -dumpbase a -dumpbase-ext a" {} {{a.???r.final a.su -0.s}}
 
@@ -846,14 +844,14 @@ outest "$b-361 doc double !-c  -o" $mult "-o dir/$b.exe -fdump-rtl-final -fstack
 outest "$b-362 doc single !-c  -o" $sing "-o dir/$b-0 -fdump-rtl-final -fstack-usage $gsplit_dwarf" {dir/} {{-0.c.???r.final -0.su !!$gspd -0.dwo !0 -0} {}}
 
 # gcc -save-temps -S foo.c
-outest "$b-363 doc single  -S -st" $sing "-save-temps -S" {} {{-0.i -0.s}}
+outest "$b-363 doc single  -S -st" $sing "-save-temps -S" {} {{-0.i -0.s a.args.0 a.args.2 a.args.1}}
 
 # gcc -save-temps -dumpbase save-foo -c foo.c
-outest "$b-364 doc single  -c -st -db" $sing "-save-temps -dumpbase $b -c" {} {{.i .s -0.o}}
+outest "$b-364 doc single  -c -st -db" $sing "-save-temps -dumpbase $b -c" {} {{.i .s -0.o outputs.args.2 outputs.args.1 outputs.args.3 outputs.args.0}}
 
 # gcc foo.c -c -o dir/foo.o -dumpbase alt/foo \
 #   -dumpdir pfx- -save-temps=cwd ...
-outest "$b-365 doc single  -c  -o -db" $sing "-c -o dir/$b.o -dumpbase alt/$b -dumpdir pfx- -save-temps=cwd -fdump-rtl-final -fstack-usage $gsplit_dwarf" {alt/ dir/} {{.i .s .???r.final .su !!$gspd .dwo} {.o} {}}
+outest "$b-365 doc single  -c  -o -db" $sing "-c -o dir/$b.o -dumpbase alt/$b -dumpdir pfx- -save-temps=cwd -fdump-rtl-final -fstack-usage $gsplit_dwarf" {alt/ dir/} {{.i .s .???r.final .su !!$gspd .dwo outputs.args.2 outputs.args.5 outputs.args.1 outputs.args.4 outputs.args.3 outputs.args.0} {.o} {}}
 
 # gcc foo.c bar.c -c -dumpbase main ...
 outest "$b-366 doc double  -c !-o -db" $mult "-c -dumpbase $b -fdump-rtl-final -fstack-usage $gsplit_dwarf" {} {{--1.c.???r.final --1.su !!$gspd --1.dwo !0 -1.o --2.c.???r.final --2.su !!$gspd --2.dwo !0 -2.o}}
@@ -879,7 +877,7 @@ outest "$b-371 doc single  -c !-o -dd" $sing "-dumpdir $b- -c -fdump-rtl-final -
 outest "$b-372 doc single  -c  -o -dd" $sing "-dumpdir dir/ -c -o obj/$b.o -fdump-rtl-final -fstack-usage $gsplit_dwarf" {dir/ obj/} {{.c.???r.final .su !!$gspd .dwo} {.o} {}}
 
 # gcc -dumpdir pfx- -c foo.c -save-temps=obj ...
-outest "$b-373 doc single  -c  -o -dd -st=" $sing "-dumpdir $b- -c -save-temps=obj -fdump-rtl-final -fstack-usage $gsplit_dwarf" {} {{-0.c.???r.final -0.su !!$gspd -0.dwo !0 -0.i -0.s -0.o}}
+outest "$b-373 doc single  -c  -o -dd -st=" $sing "-dumpdir $b- -c -save-temps=obj -fdump-rtl-final -fstack-usage $gsplit_dwarf" {} {{-0.c.???r.final -0.su !!$gspd -0.dwo !0 -0.i -0.s -0.o a.args.0 a.args.4 a.args.3 a.args.2 a.args.5 a.args.1}}
 
 # gcc foo.c bar.c -c -dumpdir dir/pfx- -dumpbase main ...
 outest "$b-374 doc double  -c !-o -dd -db" $mult "-c -dumpdir dir/ -dumpbase $b -fdump-rtl-final -fstack-usage $gsplit_dwarf" {dir/} {{--1.c.???r.final --1.su !!$gspd --1.dwo !0 --2.c.???r.final --2.su !!$gspd --2.dwo} {-1.o -2.o}}

@@ -1617,7 +1617,7 @@ onload (struct ld_plugin_tv *tv)
 	     "could not register the all_symbols_read callback");
     }
 
-  char *collect_gcc_options = getenv ("COLLECT_GCC_OPTIONS");
+  char *collect_gcc_options = getenv_extended ("COLLECT_GCC_OPTIONS");
   if (collect_gcc_options)
     {
       /* Support -fno-use-linker-plugin by failing to load the plugin
